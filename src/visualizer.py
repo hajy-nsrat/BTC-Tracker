@@ -51,6 +51,10 @@ def plot_predictions(df_history, results, save_path="outputs/predictions.png"):
     ax.plot(test_df.index, test_df["predicted"],
             label="Predicted (test period)", color="#e74c3c", linewidth=1.5, linestyle="--")
 
+    if "baseline" in test_df.columns:
+        ax.plot(test_df.index, test_df["baseline"],
+                label="Baseline (test period)", color="#95a5a6", linewidth=1, linestyle=":")
+
     # Future predictions
     future_df = results["future_predictions"]
     ax.plot(future_df.index, future_df["predicted_price"],

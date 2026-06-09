@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Generated data and outputs (optional — remove these lines to track them)
+data/btc_prices.csv
+data/btc_prices_clean.csv
+outputs/
