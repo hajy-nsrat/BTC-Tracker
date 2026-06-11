@@ -9,6 +9,11 @@ from src.cleaner import clean_data, inspect_data, load_data, save_clean_data
 from src.features import add_features
 from src.fetcher import fetch_btc_prices, save_to_csv
 from src.model import save_predictions, train_and_predict
+from src.prediction_tracker import (
+    append_prediction_log,
+    print_score_report,
+    score_predictions,
+)
 from src.visualizer import plot_predictions, plot_price_history, plot_volatility
 
 
@@ -80,6 +85,14 @@ def main():
     df_clean = clean_data(df)
     save_clean_data(df_clean, filepath=args.clean_path)
 
+    print("\n[Step 2b] Scoring past predictions against actual prices...")
+    log_path = os.path.join(args.output_dir, "prediction_log.csv")
+    scores_path = os.path.join(args.output_dir, "prediction_scores.csv")
+    score_summary = score_predictions(
+        df_clean["price"], log_path=log_path, scores_path=scores_path
+    )
+    print_score_report(score_summary)
+
     print("\n[Step 3] Engineering features...")
     df_features = add_features(df_clean)
 
@@ -87,6 +100,11 @@ def main():
     results = train_and_predict(df_features, forecast_days=args.forecast_days)
     predictions_path = os.path.join(args.output_dir, "predictions.csv")
     save_predictions(results["future_predictions"], filepath=predictions_path)
+    append_prediction_log(
+        results["future_predictions"],
+        run_date=df_clean.index[-1],
+        log_path=log_path,
+    )
 
     print("\n[Step 5] Generating charts...")
     plot_price_history(

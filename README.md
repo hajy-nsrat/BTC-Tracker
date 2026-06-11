@@ -14,6 +14,7 @@ BTC-Tracker/
 │   ├── cleaner.py          # Clean and prepare data
 │   ├── features.py         # Add technical indicator features
 │   ├── model.py            # Train model and predict
+│   ├── prediction_tracker.py  # Log forecasts & score vs actuals
 │   └── visualizer.py       # Generate charts
 ├── main.py                 # Run the full pipeline
 └── requirements.txt        # Dependencies
@@ -59,7 +60,21 @@ python main.py --days 730 --forecast-days 14 --verbose
 - `outputs/price_history.png`  — historical price with moving averages
 - `outputs/predictions.png`    — actual vs predicted vs baseline + forecast
 - `outputs/volatility.png`     — 7-day rolling volatility
-- `outputs/predictions.csv`    — forecast as a CSV
+- `outputs/predictions.csv`    — latest forecast as a CSV
+- `outputs/prediction_log.csv` — append-only log of every run's forecasts
+- `outputs/prediction_scores.csv` — matured predictions vs actual prices
+
+## Prediction tracking
+
+Each run logs its forward forecast. On the next run, once a target date has
+passed, the pipeline scores those predictions against real prices and prints
+a report (e.g. "yesterday we predicted $X, actual was $Y").
+
+Run daily for meaningful tracking:
+
+```bash
+python main.py
+```
 
 ## Model notes
 
